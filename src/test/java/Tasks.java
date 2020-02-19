@@ -26,4 +26,11 @@ public class Tasks {
      * expect content type json
      * expect response completed status to be false
      * **/
+
+    /** Task 5
+     * create a request to https://reqres.in/api/users?page=2
+     * expect status 200
+     * expect content type json
+     * expect data to contain first name "George"
+     * **/
 }

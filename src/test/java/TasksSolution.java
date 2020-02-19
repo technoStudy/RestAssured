@@ -50,4 +50,27 @@ public class TasksSolution {
                 extract().path( "title" );
         Assert.assertEquals( title, "quis ut nam facilis et officia qui" );
     }
+
+    @Test
+    public void task4() {
+        given().
+                when().
+                get( "https://jsonplaceholder.typicode.com/todos/2" ).
+                then().
+                statusCode( 200 ).
+                contentType( ContentType.JSON ).
+                body( "completed", equalTo( false ) );
+    }
+
+    @Test
+    public void task4alternative() {
+        Boolean status = given().
+                when().
+                get( "https://jsonplaceholder.typicode.com/todos/2" ).
+                then().
+                statusCode( 200 ).
+                contentType( ContentType.JSON ).
+                extract().path( "completed" );
+        Assert.assertFalse( status );
+    }
 }
