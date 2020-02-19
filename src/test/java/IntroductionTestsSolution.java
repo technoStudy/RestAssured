@@ -69,4 +69,15 @@ public class IntroductionTestsSolution {
                 body( "places", hasSize( 2 ) );
     }
 
+    @Test
+    public void combinedTest(){
+        given().
+                when().
+                get( "http://api.zippopotam.us/us/90210" ).
+                then().
+                statusCode( 200 ).
+                contentType( ContentType.JSON ).
+                body( "places[0].state", equalTo( "California" ) );
+    }
+
 }
