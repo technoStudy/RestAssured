@@ -4,6 +4,7 @@ import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -163,4 +164,17 @@ public class IntroductionTestsSolution {
         .body( "result", not(empty()) );
     }
 
+
+    @Test
+    public void extractValueFromReponseBody(){
+        String placeName = given().
+                when().
+                get( "us/90210" ).
+                then().
+                log().body().
+                extract().
+                path( "places[0].'place name'" );
+
+        Assert.assertEquals(placeName, "Beverly Hills");
+    }
 }
