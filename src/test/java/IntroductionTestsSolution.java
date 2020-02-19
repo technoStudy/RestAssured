@@ -112,7 +112,8 @@ public class IntroductionTestsSolution {
                 then().
                 log().status().
                 log().body().
-                statusCode( 200 );
+                statusCode( 200 )
+        .body( "result", not(empty()) );
     }
 
 }
