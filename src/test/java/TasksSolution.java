@@ -73,4 +73,15 @@ public class TasksSolution {
                 extract().path( "completed" );
         Assert.assertFalse( status );
     }
+
+    @Test
+    public void task5() {
+        given().
+                when().
+                get( "https://reqres.in/api/users?page=2" ).
+                then().
+                statusCode( 200 ).
+                contentType( ContentType.JSON ).
+                body( "data.first_name", hasItem( "George" ) );
+    }
 }
