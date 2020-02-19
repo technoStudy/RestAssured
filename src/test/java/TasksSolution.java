@@ -13,4 +13,14 @@ public class TasksSolution {
                 contentType( ContentType.TEXT ).
                 body( equalTo( "203 Non-Authoritative Information" ) );
     }
+    @Test
+    public void task2() {
+        given().
+                when().
+                get("https://httpstat.us/418").
+                then().
+                statusCode( 418 ).
+                contentType( ContentType.TEXT ).
+                body( equalTo( "418 I'm a teapot" ) );
+    }
 }
