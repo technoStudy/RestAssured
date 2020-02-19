@@ -1,5 +1,7 @@
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -7,6 +9,28 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 public class IntroductionTestsSolution {
+
+    private RequestSpecification requestSpec;
+
+    @BeforeClass
+    public void createRequestSpecification() {
+        requestSpec = new RequestSpecBuilder().
+                setBaseUri("http://zippopotam.us").
+                setAccept(ContentType.JSON).
+                build();
+    }
+
+    @Test
+    public void statusCodeTestWithRequestSpec() {
+        given().
+                spec(requestSpec).  // using spec here
+                when().
+                get("us/90210").
+                then().
+                statusCode(200);
+    }
+
+
     @BeforeClass
     public void init(){
         RestAssured.baseURI = "http://api.zippopotam.us";
