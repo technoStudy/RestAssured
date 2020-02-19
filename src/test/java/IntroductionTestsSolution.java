@@ -51,4 +51,13 @@ public class IntroductionTestsSolution {
                 body( "'post code'", equalTo( "90210" ) );
     }
 
+    @Test
+    public void checkListHasItem(){
+        given().
+                when().
+                get("http://api.zippopotam.us/tr/34295").
+                then().
+                body( "places.'place name'",  hasItem( "Kartaltepe Mah." ));
+    }
+
 }
