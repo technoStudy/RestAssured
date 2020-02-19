@@ -166,7 +166,7 @@ public class IntroductionTestsSolution {
 
 
     @Test
-    public void extractValueFromReponseBody(){
+    public void extractValueFromResponseBody(){
         String placeName = given().
                 when().
                 get( "us/90210" ).
