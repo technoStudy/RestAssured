@@ -60,4 +60,13 @@ public class IntroductionTestsSolution {
                 body( "places.'place name'",  hasItem( "Kartaltepe Mah." ));
     }
 
+    @Test
+    public void  checkListSize(){
+        given().
+                when().
+                get("http://api.zippopotam.us/tr/34840").
+                then().
+                body( "places", hasSize( 2 ) );
+    }
+
 }
