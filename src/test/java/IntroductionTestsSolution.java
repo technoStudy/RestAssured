@@ -33,4 +33,22 @@ public class IntroductionTestsSolution {
                 log().body();  // and this
     }
 
+    @Test
+    public void checkReponseBody() {
+        given().
+                when().
+                get("http://zippopotam.us/us/90210").
+                then().
+                body( "places[0].state", equalTo( "California" ) );
+    }
+
+    @Test
+    public void checkReponseBodyPostCode() {
+        given().
+                when().
+                get("http://zippopotam.us/us/90210").
+                then().
+                body( "'post code'", equalTo( "90210" ) );
+    }
+
 }
