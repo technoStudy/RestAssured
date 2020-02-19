@@ -22,4 +22,15 @@ public class IntroductionTestsSolution {
                 then().
                 contentType( ContentType.JSON );
     }
+
+    @Test
+    public void logRequestAndResponseDetails() {
+        given().
+                log().all(). // add this
+                when().
+                get("http://zippopotam.us/us/90210").
+                then().
+                log().body();  // and this
+    }
+
 }
