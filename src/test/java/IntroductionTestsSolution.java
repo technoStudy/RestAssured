@@ -18,8 +18,8 @@ public class IntroductionTestsSolution {
     public void simpleResponseTypeTest() {
         given().
                 when().
-                get( "http://google.com" ).
+                get( "http://api.zippopotam.us/us/90210" ).
                 then().
-                contentType( ContentType.HTML );
+                contentType( ContentType.JSON );
     }
 }
