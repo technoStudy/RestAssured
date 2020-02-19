@@ -1,15 +1,22 @@
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 public class IntroductionTestsSolution {
+    @BeforeClass
+    public void init(){
+        RestAssured.baseURI = "http://api.zippopotam.us";
+    }
+    
     @Test
     public void simpleGetTest() {
         given().
                 when().
-                get( "http://api.zippopotam.us/us/90210" ).
+                get( "/us/90210" ).
                 then().
                 statusCode( 200 );
     }
@@ -18,7 +25,7 @@ public class IntroductionTestsSolution {
     public void simpleResponseTypeTest() {
         given().
                 when().
-                get( "http://api.zippopotam.us/us/90210" ).
+                get( "/us/90210" ).
                 then().
                 contentType( ContentType.JSON );
     }
@@ -55,7 +62,7 @@ public class IntroductionTestsSolution {
     public void checkListHasItem(){
         given().
                 when().
-                get("http://api.zippopotam.us/tr/34295").
+                get("/tr/34295").
                 then().
                 body( "places.'place name'",  hasItem( "Kartaltepe Mah." ));
     }
@@ -64,7 +71,7 @@ public class IntroductionTestsSolution {
     public void  checkListSize(){
         given().
                 when().
-                get("http://api.zippopotam.us/tr/34840").
+                get("/tr/34840").
                 then().
                 body( "places", hasSize( 2 ) );
     }
@@ -73,11 +80,23 @@ public class IntroductionTestsSolution {
     public void combinedTest(){
         given().
                 when().
-                get( "http://api.zippopotam.us/us/90210" ).
+                get( "/us/90210" ).
                 then().
                 statusCode( 200 ).
                 contentType( ContentType.JSON ).
                 body( "places[0].state", equalTo( "California" ) );
     }
 
+    @Test
+    public void pathParameterTest(){
+        given().
+                log().uri().
+                pathParam( "country", "us" ).
+                pathParam( "zipcode", "90210" ).
+                when().
+                get("/{country}/{zipcode}").
+                then().
+                log().status().
+                statusCode( 200 );
+    }
 }
