@@ -34,11 +34,11 @@ public class IntroductionTestsSolution {
     @Test
     public void checkPlaceNameInResponseBodyWithResponseSpec() {
         given().
-                spec(requestSpec).
+                spec(requestSpec). // using spec here
                 when().
                 get("us/90210").
                 then().
-                spec(responseSpec).
+                spec(responseSpec). // using spec here
                 body("places[0].'place name'", equalTo("Beverly Hills"));
     }
 
