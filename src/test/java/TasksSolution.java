@@ -1,6 +1,7 @@
 import io.restassured.http.ContentType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pojo.Todo;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -83,5 +84,18 @@ public class TasksSolution {
                 statusCode( 200 ).
                 contentType( ContentType.JSON ).
                 body( "data.first_name", hasItem( "George" ) );
+    }
+
+    @Test
+    public void task6() {
+        Todo todo = given().
+                when().
+                get( "https://jsonplaceholder.typicode.com/todos/2" ).
+                then().
+                statusCode( 200 ).
+                contentType( ContentType.JSON ).
+                extract().as( Todo.class );
+        System.out.println(todo);
+        Assert.assertFalse( todo.getCompleted() );
     }
 }
