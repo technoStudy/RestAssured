@@ -41,4 +41,12 @@ public class Tasks {
      * create a pojo and extract it from response body
      * expect completed property of your pojo to be false
      * **/
+
+    /** Task 7
+     * create a request to https://reqres.in/api/users?page=2
+     * expect status 200
+     * expect content type json
+     * create a pojos to extract response body
+     * expect "data" property of your pojo to be not empty
+     * **/
 }
