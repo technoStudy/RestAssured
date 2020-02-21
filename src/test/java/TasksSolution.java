@@ -110,6 +110,7 @@ public class TasksSolution {
                 then().
                 log().body().
                 statusCode( 200 ).
+//                body( "data", not( empty() ) ).
                 contentType( ContentType.JSON ).
                 extract().as( Page.class );
 
