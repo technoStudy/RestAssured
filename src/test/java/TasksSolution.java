@@ -2,8 +2,10 @@ import io.restassured.http.ContentType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pojo.Todo;
+import pojo.task7.Page;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class TasksSolution {
@@ -97,5 +99,22 @@ public class TasksSolution {
                 extract().as( Todo.class );
         System.out.println(todo);
         Assert.assertFalse( todo.getCompleted() );
+    }
+
+
+    @Test
+    public void task7() {
+        Page page2 = given().
+                when().
+                get( "https://reqres.in/api/users?page=2" ).
+                then().
+                log().body().
+                statusCode( 200 ).
+                contentType( ContentType.JSON ).
+                extract().as( Page.class );
+
+//        Assert.assertNotEquals( page2.getData().size(), 0, "Data should not be empty");
+
+        assertThat( page2.getData(), not( empty() ));
     }
 }

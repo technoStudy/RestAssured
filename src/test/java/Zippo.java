@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 import pojo.Location;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class Zippo {
@@ -23,5 +24,7 @@ public class Zippo {
                 extract().body().as( Location.class );
 
         System.out.println(location);
+        assertThat(location.getPlaces(), not( empty() ));
+
     }
 }
