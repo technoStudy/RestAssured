@@ -33,4 +33,12 @@ public class Tasks {
      * expect content type json
      * expect data to contain first name "George"
      * **/
+
+    /** Task 6
+     * create a request to https://jsonplaceholder.typicode.com/todos/2
+     * expect status 200
+     * expect content type json
+     * create a pojo and extract it from response body
+     * expect completed property of your pojo to be false
+     * **/
 }
