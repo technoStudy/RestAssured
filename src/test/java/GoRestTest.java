@@ -2,6 +2,9 @@ import io.restassured.http.ContentType;
 import org.testng.annotations.Test;
 import pojo.GoRestUser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
@@ -106,14 +109,15 @@ public class GoRestTest {
         ;
 
         // Update user part
-        user.setFirstName( "My First Updated Name" );
-        user.setLastName( "My Last Updated Name" );
+        Map<String, String> updateUser = new HashMap<>(  );
+        updateUser.put( "first_name", "Updated first name" );
+        updateUser.put( "last_name", "Updated last name" );
 
         given()
                 .contentType( ContentType.JSON )
                 .auth()
                 .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
-                .body( user )
+                .body( updateUser )
                 .when()
                 .patch( "https://gorest.co.in/public-api/users/" + userId )
                 .then()
