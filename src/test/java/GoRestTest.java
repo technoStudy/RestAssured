@@ -7,6 +7,7 @@ import io.restassured.specification.AuthenticationSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import pojo.GoRestPost;
 import pojo.GoRestUser;
 
 import java.util.ArrayList;
@@ -92,23 +93,35 @@ public class GoRestTest {
     }
 
     @Test
+    public void createPostTest(){
+        GoRestUser user = getGoRestUser();
+        String userId = getCreatedUserId( user );
+
+        GoRestPost post = new GoRestPost();
+        post.setUserId( userId );
+        post.setTitle( "new post" );
+        post.setBody( "new body" );
+
+        String postId = given()
+                .spec( requestSpec )
+                .body( post )
+                .when()
+                .post( "posts" )
+                .then()
+                .log().body()
+                .body( "_meta.code", equalTo( 201 ) )
+                .contentType( ContentType.JSON )
+                .extract().jsonPath().getString( "result.id" );
+
+        deleteUserByUserId( userId );
+    }
+
+    @Test
     public void createUserTest() {
-        GoRestUser user = new GoRestUser();
-        user.setEmail( "asdfvx2@asd.as" );
-        user.setFirstName( "My First Name" );
-        user.setLastName( "My Last Name" );
-        user.setGender( "male" );
+        GoRestUser user = getGoRestUser();
 
         // Create user part
-        String userId = given()
-                .spec( requestSpec )
-                .body( user )
-                .when()
-                .post("users")
-                .then().log().everything()
-                .body( "_meta.code", equalTo( 201 ) )
-                .log().everything()
-                .extract().jsonPath().getString( "result.id" );
+        String userId = getCreatedUserId( user );
 
         // Create user negative case part
         given()
@@ -154,13 +167,7 @@ public class GoRestTest {
         ;
 
         // Delete user part
-        given()
-                .spec( requestSpec )
-                .when()
-                .delete("users/"+userId)
-                .then()
-                .body( "_meta.code", equalTo( 204 ) )
-        ;
+        deleteUserByUserId( userId );
 
         // Get user negative part
         given()
@@ -183,5 +190,36 @@ public class GoRestTest {
                 .patch( "users/"+ userId )
                 .then()
                 .body( "_meta.code", equalTo( 404 ) );
+    }
+
+    private void deleteUserByUserId(String userId) {
+        given()
+                .spec( requestSpec )
+                .when()
+                .delete("users/"+userId)
+                .then()
+                .body( "_meta.code", equalTo( 204 ) )
+        ;
+    }
+
+    private String getCreatedUserId(GoRestUser user) {
+        return given()
+                .spec( requestSpec )
+                .body( user )
+                .when()
+                .post("users")
+                .then().log().everything()
+                .body( "_meta.code", equalTo( 201 ) )
+                .log().everything()
+                .extract().jsonPath().getString( "result.id" );
+    }
+
+    private GoRestUser getGoRestUser() {
+        GoRestUser user = new GoRestUser();
+        user.setEmail( "asdfvx2@asd.as" );
+        user.setFirstName( "My First Name" );
+        user.setLastName( "My Last Name" );
+        user.setGender( "male" );
+        return user;
     }
 }
