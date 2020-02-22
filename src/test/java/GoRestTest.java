@@ -1,4 +1,8 @@
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pojo.GoRestUser;
 
@@ -10,6 +14,9 @@ import static org.hamcrest.Matchers.*;
 
 
 public class GoRestTest {
+
+    private RequestSpecification requestSpec;
+
     //https://gorest.co.in/public-api/users?_format=json&access-token=j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap
     @Test
     public void queryParamsTest(){
@@ -66,6 +73,16 @@ public class GoRestTest {
                 body( "_meta.code", equalTo( 401 ) );
     }
 
+    @BeforeClass
+    private void createRequestSpec() {
+        requestSpec = new RequestSpecBuilder()
+                .setBaseUri("https://gorest.co.in/public-api/users?_format=json&access-token=j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap")
+                .setContentType( ContentType.JSON )
+//                .setAuth(oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" )) //TODO: fix this
+                .log( LogDetail.ALL )
+                .build();
+    }
+
     @Test
     public void createUserTest() {
         GoRestUser user = new GoRestUser();
@@ -76,33 +93,29 @@ public class GoRestTest {
 
         // Create user part
         String userId = given()
-                .contentType( ContentType.JSON )
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .body( user )
                 .when()
-                .post( "https://gorest.co.in/public-api/users" )
+                .post()
                 .then()
                 .body( "_meta.code", equalTo( 201 ) )
+                .log().everything()
                 .extract().jsonPath().getString( "result.id" );
 
         // Create user negative case part
         given()
-                .contentType( ContentType.JSON )
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .body( user )
                 .when()
-                .post( "https://gorest.co.in/public-api/users" )
+                .post(  )
                 .then()
                 .body( "_meta.code", equalTo( 422 ) );
 
         // Get user part
         given()
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .when()
-                .get("https://gorest.co.in/public-api/users/"+userId)
+                .get(userId)
                 .then()
                 .body( "_meta.code", equalTo( 200 ) )
                 .body( "result.email", equalTo( user.getEmail() ) )
@@ -114,21 +127,18 @@ public class GoRestTest {
         updateUser.put( "last_name", "Updated last name" );
 
         given()
-                .contentType( ContentType.JSON )
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .body( updateUser )
                 .when()
-                .patch( "https://gorest.co.in/public-api/users/" + userId )
+                .patch(  userId )
                 .then()
                 .body( "_meta.code", equalTo( 200 ) );
 
         // Get user update check part
         given()
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .when()
-                .get("https://gorest.co.in/public-api/users/"+userId)
+                .get(userId)
                 .then()
                 .body( "_meta.code", equalTo( 200 ) )
                 .body( "result.first_name", equalTo( updateUser.get( "first_name" ) ) )
@@ -137,20 +147,18 @@ public class GoRestTest {
 
         // Delete user part
         given()
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .when()
-                .delete("https://gorest.co.in/public-api/users/"+userId)
+                .delete(userId)
                 .then()
                 .body( "_meta.code", equalTo( 204 ) )
         ;
 
         // Get user negative part
         given()
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .when()
-                .get("https://gorest.co.in/public-api/users/"+userId)
+                .get(userId)
                 .then()
                 .body( "_meta.code", equalTo( 404 ) )
         ;
@@ -161,12 +169,10 @@ public class GoRestTest {
         updateUserNegative.put( "last_name", "Negative last name" );
 
         given()
-                .contentType( ContentType.JSON )
-                .auth()
-                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .spec( requestSpec )
                 .body( updateUserNegative )
                 .when()
-                .patch( "https://gorest.co.in/public-api/users/" + userId )
+                .patch(  userId )
                 .then()
                 .body( "_meta.code", equalTo( 404 ) );
     }
