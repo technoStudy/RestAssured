@@ -66,7 +66,7 @@ public class GoRestTest {
     @Test
     public void createUserTest() {
         GoRestUser user = new GoRestUser();
-        user.setEmail( "a1s2fa123sdf@asd.as" );
+        user.setEmail( "asdfvx2@asd.as" );
         user.setFirstName( "My First Name" );
         user.setLastName( "My Last Name" );
         user.setGender( "male" );
@@ -104,6 +104,20 @@ public class GoRestTest {
                 .body( "_meta.code", equalTo( 200 ) )
                 .body( "result.email", equalTo( user.getEmail() ) )
         ;
+
+        // Update user part
+        user.setFirstName( "My First Updated Name" );
+        user.setLastName( "My Last Updated Name" );
+
+        given()
+                .contentType( ContentType.JSON )
+                .auth()
+                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .body( user )
+                .when()
+                .patch( "https://gorest.co.in/public-api/users/" + userId )
+                .then()
+                .body( "_meta.code", equalTo( 200 ) );
 
         // Delete user part
         given()
