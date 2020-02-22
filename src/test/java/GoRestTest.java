@@ -144,5 +144,30 @@ public class GoRestTest {
                 .then()
                 .body( "_meta.code", equalTo( 204 ) )
         ;
+
+        // Get user negative part
+        given()
+                .auth()
+                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .when()
+                .get("https://gorest.co.in/public-api/users/"+userId)
+                .then()
+                .body( "_meta.code", equalTo( 404 ) )
+        ;
+
+        // Update user negative part
+        Map<String, String> updateUserNegative = new HashMap<>(  );
+        updateUserNegative.put( "first_name", "Negative first name" );
+        updateUserNegative.put( "last_name", "Negative last name" );
+
+        given()
+                .contentType( ContentType.JSON )
+                .auth()
+                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .body( updateUserNegative )
+                .when()
+                .patch( "https://gorest.co.in/public-api/users/" + userId )
+                .then()
+                .body( "_meta.code", equalTo( 404 ) );
     }
 }
