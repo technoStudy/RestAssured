@@ -123,6 +123,18 @@ public class GoRestTest {
                 .then()
                 .body( "_meta.code", equalTo( 200 ) );
 
+        // Get user update check part
+        given()
+                .auth()
+                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .when()
+                .get("https://gorest.co.in/public-api/users/"+userId)
+                .then()
+                .body( "_meta.code", equalTo( 200 ) )
+                .body( "result.first_name", equalTo( updateUser.get( "first_name" ) ) )
+                .body( "result.last_name", equalTo( updateUser.get( "last_name" ) ) )
+        ;
+
         // Delete user part
         given()
                 .auth()
