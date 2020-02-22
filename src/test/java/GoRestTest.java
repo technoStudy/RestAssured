@@ -66,12 +66,12 @@ public class GoRestTest {
     @Test
     public void createUserTest() {
         GoRestUser user = new GoRestUser();
-        user.setEmail( "as2fa123sdf@asd.as" );
+        user.setEmail( "a1s2fa123sdf@asd.as" );
         user.setFirstName( "My First Name" );
         user.setLastName( "My Last Name" );
         user.setGender( "male" );
 
-
+        // Create user part
         String userId = given()
                 .contentType( ContentType.JSON )
                 .auth()
@@ -80,17 +80,28 @@ public class GoRestTest {
                 .when()
                 .post( "https://gorest.co.in/public-api/users" )
                 .then()
-//                .log().body()
                 .body( "_meta.code", equalTo( 201 ) )
                 .extract().jsonPath().getString( "result.id" );
 
+        // Create user negative case part
+        given()
+                .contentType( ContentType.JSON )
+                .auth()
+                .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
+                .body( user )
+                .when()
+                .post( "https://gorest.co.in/public-api/users" )
+                .then()
+                .body( "_meta.code", equalTo( 422 ) );
+
+
+        // Delete user part
         given()
                 .auth()
                 .oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" ) // basic OAuth 2
                 .when()
                 .delete("https://gorest.co.in/public-api/users/"+userId)
                 .then()
-//                .log().all()
                 .body( "_meta.code", equalTo( 204 ) )
         ;
     }
