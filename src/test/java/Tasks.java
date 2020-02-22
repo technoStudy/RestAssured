@@ -49,4 +49,14 @@ public class Tasks {
      * create a pojos to extract response body
      * expect "data" property of your pojo to be not empty
      * **/
+
+
+    /** Task 8
+     * create a pojo for posts
+     * create a post request to https://gorest.co.in/public-api/posts
+     * send your pojo inside body of your post request
+     * expect status 201
+     * expect content type json
+     * extract post id from body
+     * **/
 }
