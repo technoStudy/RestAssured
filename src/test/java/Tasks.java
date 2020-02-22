@@ -65,5 +65,8 @@ public class Tasks {
      * send your pojo inside body of your post request
      * expect status 200
      * expect content type json
+     *
+     * after that delete the post using postId
+     * expect status 204
      * **/
 }

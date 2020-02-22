@@ -113,6 +113,26 @@ public class GoRestTest {
                 .contentType( ContentType.JSON )
                 .extract().jsonPath().getString( "result.id" );
 
+        Map<String, String> updatePost = new HashMap<>(  );
+        updatePost.put( "title", "Updated title" );
+        updatePost.put( "body", "Updated body" );
+
+        given()
+                .spec( requestSpec )
+                .body( updatePost )
+                .when()
+                .patch( "posts/"+postId )
+                .then()
+                .body( "_meta.code", equalTo( 200 ) );
+
+        given()
+                .spec( requestSpec )
+                .when()
+                .delete("posts/"+postId)
+                .then()
+                .body( "_meta.code", equalTo( 204 ) )
+        ;
+
         deleteUserByUserId( userId );
     }
 
@@ -216,7 +236,7 @@ public class GoRestTest {
 
     private GoRestUser getGoRestUser() {
         GoRestUser user = new GoRestUser();
-        user.setEmail( "asdfvx2@asd.as" );
+        user.setEmail( "asdfvx3@asd.as" );
         user.setFirstName( "My First Name" );
         user.setLastName( "My Last Name" );
         user.setGender( "male" );
