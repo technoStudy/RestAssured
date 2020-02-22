@@ -59,4 +59,11 @@ public class Tasks {
      * expect content type json
      * extract post id from body
      * **/
+
+    /** Task 9
+     * create a patch request to https://gorest.co.in/public-api/posts/{postId}
+     * send your pojo inside body of your post request
+     * expect status 200
+     * expect content type json
+     * **/
 }
