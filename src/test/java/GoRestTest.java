@@ -1,12 +1,17 @@
+import io.restassured.authentication.OAuth2Scheme;
+import io.restassured.authentication.PreemptiveOAuth2HeaderScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.specification.AuthenticationSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pojo.GoRestUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.*;
@@ -75,10 +80,13 @@ public class GoRestTest {
 
     @BeforeClass
     private void createRequestSpec() {
+        PreemptiveOAuth2HeaderScheme auth2Scheme = new PreemptiveOAuth2HeaderScheme ();
+        auth2Scheme.setAccessToken( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" );
+
         requestSpec = new RequestSpecBuilder()
-                .setBaseUri("https://gorest.co.in/public-api/users?_format=json&access-token=j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap")
+                .setBaseUri("https://gorest.co.in/public-api/")
                 .setContentType( ContentType.JSON )
-//                .setAuth(oauth2( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" )) //TODO: fix this
+                .setAuth(auth2Scheme)
                 .log( LogDetail.ALL )
                 .build();
     }
@@ -96,8 +104,8 @@ public class GoRestTest {
                 .spec( requestSpec )
                 .body( user )
                 .when()
-                .post()
-                .then()
+                .post("users")
+                .then().log().everything()
                 .body( "_meta.code", equalTo( 201 ) )
                 .log().everything()
                 .extract().jsonPath().getString( "result.id" );
@@ -107,7 +115,7 @@ public class GoRestTest {
                 .spec( requestSpec )
                 .body( user )
                 .when()
-                .post(  )
+                .post("users")
                 .then()
                 .body( "_meta.code", equalTo( 422 ) );
 
@@ -115,7 +123,7 @@ public class GoRestTest {
         given()
                 .spec( requestSpec )
                 .when()
-                .get(userId)
+                .get("users/" + userId)
                 .then()
                 .body( "_meta.code", equalTo( 200 ) )
                 .body( "result.email", equalTo( user.getEmail() ) )
@@ -130,7 +138,7 @@ public class GoRestTest {
                 .spec( requestSpec )
                 .body( updateUser )
                 .when()
-                .patch(  userId )
+                .patch( "users/"+userId )
                 .then()
                 .body( "_meta.code", equalTo( 200 ) );
 
@@ -138,7 +146,7 @@ public class GoRestTest {
         given()
                 .spec( requestSpec )
                 .when()
-                .get(userId)
+                .get("users/"+userId)
                 .then()
                 .body( "_meta.code", equalTo( 200 ) )
                 .body( "result.first_name", equalTo( updateUser.get( "first_name" ) ) )
@@ -149,7 +157,7 @@ public class GoRestTest {
         given()
                 .spec( requestSpec )
                 .when()
-                .delete(userId)
+                .delete("users/"+userId)
                 .then()
                 .body( "_meta.code", equalTo( 204 ) )
         ;
@@ -158,7 +166,7 @@ public class GoRestTest {
         given()
                 .spec( requestSpec )
                 .when()
-                .get(userId)
+                .get("users/"+userId)
                 .then()
                 .body( "_meta.code", equalTo( 404 ) )
         ;
@@ -172,7 +180,7 @@ public class GoRestTest {
                 .spec( requestSpec )
                 .body( updateUserNegative )
                 .when()
-                .patch(  userId )
+                .patch( "users/"+ userId )
                 .then()
                 .body( "_meta.code", equalTo( 404 ) );
     }
