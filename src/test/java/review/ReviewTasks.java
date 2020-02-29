@@ -25,4 +25,15 @@ public class ReviewTasks {
      * create a get request to zippo api {country}/{zipcode} that uses your data provider
      * validate that places array has exactly the number of places
      **/
+
+    /** Task 5
+     * use a pojo for users
+     * create a user request to https://gorest.co.in/public-api/users
+     * send your pojo inside body of your post request
+     * expect status 201
+     * expect content type json
+     * check that use is created by checking that results of
+     * https://gorest.co.in/public-api/users?name={your_user_name}
+     * contain your user id
+     ***/
 }
