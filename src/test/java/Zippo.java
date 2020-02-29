@@ -25,6 +25,16 @@ public class Zippo {
 
         System.out.println(location);
         assertThat(location.getPlaces(), not( empty() ));
+    }
 
+    @Test
+    public void getAzip() {
+        given()
+                .when()
+                .get("us/07011")
+                .then()
+        .statusCode( 200 )
+        .body( "places[0].state", equalTo( "New Jersey" ) )
+        ;
     }
 }
