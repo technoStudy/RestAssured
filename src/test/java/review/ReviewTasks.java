@@ -36,4 +36,13 @@ public class ReviewTasks {
      * https://gorest.co.in/public-api/users?name={your_user_name}
      * contain your user id
      ***/
+
+    /** Task 6
+     * use https://gorest.co.in endpoint
+     * create user, extract user id
+     * using this user id create a random number of posts
+     * find all post by your user id
+     * verify that the number of post is equal to the number of post you created
+     * delete the user id
+     ***/
 }
