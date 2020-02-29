@@ -23,4 +23,16 @@ public class ReviewTasksSolution {
         .body( "places[0].'place name'", equalTo( "Beverly Hills" ) )
                 ;
     }
+
+    @Test
+    public void task2(){
+        given()
+                .pathParam( "country", "us" )
+                .pathParam( "zipcode", "90210" )
+                .when()
+                .get("/{country}/{zipcode}")
+                .then()
+                .body( "places", not( empty()) )
+                ;
+    }
 }
