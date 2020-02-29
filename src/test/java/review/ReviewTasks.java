@@ -18,4 +18,11 @@ public class ReviewTasks {
      * create a get request to zippo api {country}/{zipcode} that uses your data provider
      * validate that places array contains your place_name
      **/
+
+    /** Task 4
+     * create data provide with 3 fields, number of places, country, zipcode
+     * add at least 3 rows of data in your data provider
+     * create a get request to zippo api {country}/{zipcode} that uses your data provider
+     * validate that places array has exactly the number of places
+     **/
 }
