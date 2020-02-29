@@ -1,15 +1,22 @@
 package review;
 
 import io.restassured.RestAssured;
+import io.restassured.authentication.PreemptiveOAuth2HeaderScheme;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pojo.GoRestUser;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 public class ReviewTasksSolution {
+    private RequestSpecification requestSpec;
+
     @BeforeClass
     public void init(){
         RestAssured.baseURI = "http://api.zippopotam.us";
@@ -77,5 +84,64 @@ public class ReviewTasksSolution {
                 {1, "MQ", "97200"},
                 {71, "TR", "01000"},
         };
+    }
+
+    @BeforeClass
+    private void createRequestSpec() {
+        PreemptiveOAuth2HeaderScheme auth2Scheme = new PreemptiveOAuth2HeaderScheme ();
+        auth2Scheme.setAccessToken( "j6XoJSutZrv-ikB-4X4_Zndi54_iqSZES-Ap" );
+
+        requestSpec = new RequestSpecBuilder()
+                .setBaseUri("https://gorest.co.in/public-api/")
+                .setContentType( ContentType.JSON )
+                .setAuth(auth2Scheme)
+                .log( LogDetail.ALL )
+                .build();
+    }
+    @Test
+    public void task5() {
+        GoRestUser user = getGoRestUser();
+        String userId = getCreatedUserId( user );
+
+        //Testing search
+            given()
+                    .spec( requestSpec )
+                    .param( "first_name", user.getFirstName() )
+                    .when()
+                    .get("users")
+                    .then()
+            .body( "result.id", hasItem( userId ) )
+            ;
+
+        deleteUserByUserId( userId );
+    }
+
+    private String getCreatedUserId(GoRestUser user) {
+        return given()
+                .spec( requestSpec )
+                .body( user )
+                .when()
+                .post("users")
+                .then().log().everything()
+                .body( "_meta.code", equalTo( 201 ) )
+                .log().everything()
+                .extract().jsonPath().getString( "result.id" );
+    }
+    private void deleteUserByUserId(String userId) {
+        given()
+                .spec( requestSpec )
+                .when()
+                .delete("users/"+userId)
+                .then()
+                .body( "_meta.code", equalTo( 204 ) )
+        ;
+    }
+    private GoRestUser getGoRestUser() {
+        GoRestUser user = new GoRestUser();
+        user.setEmail( "asdfvx3@asd.as" );
+        user.setFirstName( "My First Name" );
+        user.setLastName( "My Last Name" );
+        user.setGender( "male" );
+        return user;
     }
 }
