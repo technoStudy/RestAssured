@@ -57,4 +57,25 @@ public class ReviewTasksSolution {
                 {"Çiçekli Köyü", "TR", "01000"},
         };
     }
+
+    @Test(dataProvider = "task4data")
+    public void task4(Integer numberOfPlaces, String country, String zipCode){
+        given()
+                .pathParam( "country", country )
+                .pathParam( "zipcode", zipCode )
+                .when()
+                .get("/{country}/{zipcode}")
+                .then()
+                .body( "places.'place name'", hasSize( numberOfPlaces ) )
+        ;
+    }
+
+    @DataProvider
+    public Object[][] task4data() {
+        return new Object[][] {
+                {1, "us", "90210"},
+                {1, "MQ", "97200"},
+                {71, "TR", "01000"},
+        };
+    }
 }
