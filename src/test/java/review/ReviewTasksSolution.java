@@ -9,7 +9,10 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pojo.GoRestPost;
 import pojo.GoRestUser;
+
+import java.util.Random;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -138,10 +141,54 @@ public class ReviewTasksSolution {
     }
     private GoRestUser getGoRestUser() {
         GoRestUser user = new GoRestUser();
-        user.setEmail( "asdfvx3@asd.as" );
+        user.setEmail( "asdfasdasdvx3@asd.as" );
         user.setFirstName( "My First Name" );
         user.setLastName( "My Last Name" );
         user.setGender( "male" );
         return user;
+    }
+
+
+    @Test
+    public void task6() {
+        GoRestUser user = getGoRestUser();
+        String userId = getCreatedUserId( user );
+
+        Integer randomNumber = new Random(  ).nextInt(10);
+        System.out.println(randomNumber);
+        for(int i = 0; i < randomNumber; i++) {
+            createPost( userId );
+
+        }
+
+        // verify that the number of post is equal to the number of post you created
+        given()
+                .spec( requestSpec )
+                .param( "user_id", userId )
+                .when()
+                .get("posts")
+                .then()
+                .body( "_meta.totalCount", equalTo( randomNumber ) )
+                .body( "result", hasSize( randomNumber ) )
+        ;
+
+
+        deleteUserByUserId( userId );
+    }
+
+    private void createPost(String userId) {
+        GoRestPost post = new GoRestPost();
+        post.setUserId( userId );
+        post.setTitle( "new post" );
+        post.setBody( "new body" );
+
+        given()
+                .spec( requestSpec )
+                .body( post )
+                .when()
+                .post( "posts" )
+                .then()
+                .log().body()
+                .body( "_meta.code", equalTo( 201 ) );
     }
 }
