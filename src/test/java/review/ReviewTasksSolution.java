@@ -170,6 +170,7 @@ public class ReviewTasksSolution {
                 .then()
                 .body( "_meta.totalCount", equalTo( randomNumber ) )
                 .body( "result", hasSize( randomNumber ) )
+        .body( "result.user_id", everyItem( equalTo( userId ) ) )
         ;
 
 
